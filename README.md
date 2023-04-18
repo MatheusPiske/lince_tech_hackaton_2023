@@ -15,7 +15,7 @@
 
 => MANIPULANDO APARIÇÃO DO LOADER: 
 
-const aoSubmeterLogin = (event: React.FormEvent<HTMLFormElement>) => {
+    const aoSubmeterLogin = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
 
         const carregandoComponent = document.getElementById("carregandoComponent")
