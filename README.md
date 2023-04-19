@@ -46,3 +46,9 @@
             }
         })
     }
+
+
+## ABRIR O PROJETO EM OUTRAS PORTAS
+
+=> React: yarn (npm) start --port=3001
+=> Kotlin: ./gradlew bootRun --args='--server.port=8081'
