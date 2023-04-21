@@ -1,6 +1,6 @@
 import Home from './home/pages';
 import { Route, Routes } from "react-router-dom";
-import Chamados from './chamados/pages';
+import Chamados from './chamados/pages/index';
 
 const Rotas = () => (
   <Routes>
