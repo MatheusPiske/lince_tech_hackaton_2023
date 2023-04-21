@@ -84,10 +84,10 @@ function App() {
           </ul>
       </li> */}
       <li>
-      <div className="profile-details">
-      <div className="profile-content">
+      {/* <div className="profile-details"> */}
+      {/* <div className="profile-content"> */}
           {/* <img src="image/profile.jpg" alt="profileImg"> */}
-      </div>
+      {/* </div> */}
       {/* <div className="name-job">
           <div className="profile_name">DS501</div>
           <div className="job">Consulta de chamados</div>
@@ -107,7 +107,7 @@ function App() {
           </Select>
         </FormControl>
       </Box> */}
-      </div>
+      {/* </div> */}
       </li>
       </ul>
       </div>
