@@ -48,7 +48,7 @@ function App() {
   <>
       <div className="sidebar close">
       <div className="logo-details">
-      {/* <i className='bx bxl-c-plus-plus'></i> */}
+      <i className='bx bxl-c-plus-plus'></i>
       {/* <img src="/images/lince_tech.jpeg" className='imagemSideBar'/> */}
       <span className="logo_name">Lince Tech</span>
       </div>

@@ -14,6 +14,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import shadows from '@mui/material/styles/shadows';
+import { Typography } from '@mui/material';
 
 const Chamados = () => { 
     const [liberador, setLiberador] = React.useState('');
@@ -24,8 +25,8 @@ const Chamados = () => {
 
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
         [`&.${tableCellClasses.head}`]: {
-          backgroundColor: "#00408b",
-          color: theme.palette.common.white,
+          backgroundColor: "#85858524",
+          color: theme.palette.common.black,
         },
         [`&.${tableCellClasses.body}`]: {
           fontSize: 14,
@@ -34,7 +35,7 @@ const Chamados = () => {
       
       const StyledTableRow = styled(TableRow)(({ theme }) => ({
         '&:nth-of-type(odd)': {
-          backgroundColor: theme.palette.action.hover,
+        //   backgroundColor: theme.palette.action.hover,
         },
         // hide last border
         '&:last-child td, &:last-child th': {
@@ -58,8 +59,13 @@ const Chamados = () => {
     <>
         <section className="home-section">
             <div className="home-content" style={{justifyContent : "space-between"}}>
-            <i className='bx bx-menu' ></i>
-            <h1 className="home-content-title">Chamados</h1>
+            <div style={{display : "flex", alignItems : "center"}}>
+                <i className='bx bx-menu' ></i>
+                <Box sx={{ display: 'grid', height: '9vh' }}>
+                    <Typography sx={{ display: 'flex', alignItems: 'center', fontSize: "22pt", fontWeight: "600", paddingTop : "15px" }}>Chamados</Typography>
+                    <Box sx={{ width: '2.5rem', height: '5px', marginTop: '-0.5rem', borderRadius: '5px', background: 'linear-gradient(90deg, #154360 0%, #1F618D 35%, #2980B9 100%)' }}></Box>
+                </Box>
+            </div>
 
             <Box sx={{ minWidth: 150, padding : "20px 20px 0 0" }} id="selectLiberador">
                 <FormControl fullWidth>
@@ -71,14 +77,14 @@ const Chamados = () => {
                     label="liberador"
                     onChange={handleChange}
                 >
-                    <MenuItem value={10}>Aprovador</MenuItem>
-                    <MenuItem value={20}>Usuário</MenuItem>
+                    <MenuItem value={10}>Usuário</MenuItem>
+                    <MenuItem value={20}>Aprovador</MenuItem>
                 </Select>
                 </FormControl>
             </Box>
             </div>
 
-            <TableContainer component={Paper} sx={{padding : "20px", boxShadow : "none"}}>
+            <TableContainer component={Paper} sx={{padding : "20px", boxShadow : "none", borderRadius: "75px"}}>
                 <Table sx={{ minWidth: 700 }} aria-label="customized table">
                     <TableHead>
                     <TableRow>
