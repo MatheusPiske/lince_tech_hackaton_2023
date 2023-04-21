@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, Step, StepLabel, Stepper, TextField, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { callUseCases } from "../useCases/CallUseCases";
 import Swal from 'sweetalert2'
+import JoditEditor from 'jodit-react'
 
 const steps = ['Escolha um motivo', 'Informações', 'Descrição'];
 
@@ -23,6 +24,9 @@ export default function ModalPriceDetail({ isOpen }) {
     const [erro, setErro] = useState(0);
     const [property, setProperty] = useState(0);
     const [stepFlow, setStepFlow] = useState([]);
+
+    const editor = useRef(null)
+    const [content, setContent] = useState("")
 
     const handleClose = () => {
         setOpen(false);
@@ -206,7 +210,9 @@ export default function ModalPriceDetail({ isOpen }) {
                             )}
 
                             {activeStep === 2 && (
-                                <Box>tes 3</Box>
+                                <div>
+                                    <JoditEditor ref={editor} value={content} onChange={newContent => setContent(newContent)} />
+                                </div>
                             )}
                         </Box>
                     )}
