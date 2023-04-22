@@ -57,13 +57,16 @@ const Chamados = () => {
     createData('Gingerbread', 356, 16.0, 49, 3.9),
   ];
 
-  const handleOpenModalCall = (evt) => {
+  const handleOpenModalCall = (evt, uuid, code) => {
     evt.preventDefault();
     const container = document.getElementById("modal-price");
     const root = createRoot(container);
+    console.log(code)
     return root.render(
       <ModalCallFlow
         isOpen={true}
+        callUuid={uuid}
+        callCode={code}
       />
     );
   };
@@ -148,6 +151,21 @@ const Chamados = () => {
         onClick={(evt) => handleOpenModalCall(evt)}
       >
         Criar Chamado
+      </Fab>
+
+      <Fab sx={{
+        position: 'absolute',
+        bottom: 80,
+        right: 80,
+        fontWeight: 'bold',
+        backgroundColor: '#002754'
+      }}
+        variant="extended"
+        size="large"
+        color="primary"
+        onClick={(evt) => handleOpenModalCall(evt, 'a794cd5c-be17-4ec2-8392-3caea9ae96f9', 1)}
+      >
+        UPDATE
       </Fab>
     </>
   )

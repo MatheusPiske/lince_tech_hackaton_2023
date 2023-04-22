@@ -7,8 +7,13 @@ class CallUseCases {
         return response;
     }
 
-    async postCreateCall(callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate) {
-        const response = await callRepositories.postCreateCall(callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate);
+    async getFlowCall(callCode) {
+        const response = await callRepositories.getFlowCall(callCode);
+        return response;
+    }
+
+    async postCreateCall(callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate, contentCreate) {
+        const response = await callRepositories.postCreateCall(callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate, contentCreate);
         return response;
     }
 

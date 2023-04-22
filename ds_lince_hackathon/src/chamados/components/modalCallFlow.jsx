@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, Step, StepLabel, Stepper, TextField, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef } from "react";
 import { callUseCases } from "../useCases/CallUseCases";
 import Swal from 'sweetalert2'
 import JoditEditor from 'jodit-react'
@@ -8,8 +8,6 @@ import _ from 'lodash';
 import ReactInputMask from "react-input-mask";
 
 const steps = ['Escolha um motivo', 'Informações', 'Descrição'];
-
-// const stepFlow = [{ code: 1, label: 'ERRO DE SOFTWARE' }, { code: 2, label: 'MELHORIAS' }, { code: 3, label: 'DÚVIDAS' }, { code: 4, label: 'REUNUÕES E TREINAMENTOS' }, { code: 5, label: 'PROBLEMAS EQUIPAMENTOS' }, { code: 6, label: 'PROBLEMAS DE REDE' }, { code: 7, label: 'ESPECIFICAÇÕES DE EQUIPAMENTOS' }, { code: 8, label: 'LICENÇAS' }, { code: 9, label: 'MUDANÇA DE LAYOUT' }, { code: 10, label: 'LEVANTAMENTOS/MELHORIAS' }]
 
 const apps = [{ code: 1, label: 'SINGE' }, { code: 2, label: 'SALLE' }, { code: 3, label: 'CONNECT' }, { code: 4, label: 'DECOLA' }, { code: 4, label: 'MIAMI' }, { code: 5, label: 'OUTROS' }]
 
@@ -25,7 +23,7 @@ const Toast = Swal.mixin({
     },
 });
 
-export default function ModalPriceDetail({ callUuid, isOpen }) {
+export default function ModalPriceDetail({ callUuid, callCode, isOpen }) {
 
     const [open, setOpen] = useState(isOpen);
     const [scroll] = useState('body');
@@ -34,14 +32,15 @@ export default function ModalPriceDetail({ callUuid, isOpen }) {
     const [skipped, setSkipped] = useState(new Set());
 
     const [flowCode, setFlowCode] = useState(0);
-    const [software, setSoftware] = useState(0);
-    const [erro, setErro] = useState(0);
+    // const [software, setSoftware] = useState(0);
+    // const [erro, setErro] = useState(0);
     const [priority, setPriority] = useState(0);
     const [contact, setContact] = useState("");
     const [title, setTitle] = useState("");
     const [information, setInformation] = useState("");
 
     const [stepFlow, setStepFlow] = useState([]);
+    const [flowCall, setFlowCall] = useState([]);
 
     const editor = useRef(null)
     const [content, setContent] = useState("")
@@ -80,7 +79,7 @@ export default function ModalPriceDetail({ callUuid, isOpen }) {
             'about',
             'color',
             'source',
-          ],
+        ],
         uploader: {
             url: '/path/to/upload',
             method: 'POST',
@@ -90,15 +89,15 @@ export default function ModalPriceDetail({ callUuid, isOpen }) {
             isSuccess: (response) => response.status === 200,
             getMsg: (response) => response.message,
             process: (response) => response.data,
-          },
-          filebrowser: {
+        },
+        filebrowser: {
             ajax: {
-              url: '/path/to/browse',
-              data: {},
+                url: '/path/to/browse',
+                data: {},
             },
         },
     };
-   
+
     const handleContentChange = _.debounce((newContent) => {
         setContent(newContent);
     }, 10000);
@@ -113,7 +112,7 @@ export default function ModalPriceDetail({ callUuid, isOpen }) {
         var menssage = '';
 
         if (activeStep === 0) {
-            if (flowCode === null) {
+            if (flowCode === 0 || flowCode === null) {
                 error = 1;
                 menssage = 'Selecione um motivo de abertura de chamado';
             }
@@ -158,9 +157,9 @@ export default function ModalPriceDetail({ callUuid, isOpen }) {
 
     };
 
-    const handleClick = async () => {
-        console.log(content);
-    };
+    // const handleClick = async () => {
+    //     console.log(content);
+    // };
 
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -170,13 +169,13 @@ export default function ModalPriceDetail({ callUuid, isOpen }) {
         setFlowCode(newFlowCode);
     };
 
-    const handleChangeSoftware = (event) => {
-        setSoftware(event.target.value);
-    };
+    // const handleChangeSoftware = (event) => {
+    //     setSoftware(event.target.value);
+    // };
 
-    const handleChangeErro = (event) => {
-        setErro(event.target.value);
-    };
+    // const handleChangeErro = (event) => {
+    //     setErro(event.target.value);
+    // };
 
     const handleChangePriority = (event) => {
         setPriority(event.target.value);
@@ -195,13 +194,15 @@ export default function ModalPriceDetail({ callUuid, isOpen }) {
         console.log(event.target.value)
     }
 
-    const handleCall = async (callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate) => {
+    const handleCall = async (callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate, content) => {
         console.log(flowCodeCreate);
         console.log(firstFieldCreate);
         console.log(priorityCreate);
         console.log(contactCreate);
         console.log(titleCreate);
-        const response = await callUseCases.postCreateCall(callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate);
+        console.log(content);
+        console.log(callUuid);
+        const response = await callUseCases.postCreateCall(callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate, content);
 
         if (!response.status) {
             return Swal.fire({
@@ -227,8 +228,24 @@ export default function ModalPriceDetail({ callUuid, isOpen }) {
         getFlowCodes().then((response) => {
             setStepFlow(response.data.flow)
         });
-    }, []);
 
+        if (callCode > 0) {
+            const getFlowCalls = async () => {
+                const flowCall = await callUseCases.getFlowCall(callCode);
+                return flowCall;
+            };
+            getFlowCalls().then((response) => {
+                // setFlowCall(response.data.call)
+                setInformation(response.data.call.originProblemS)
+                setTitle(response.data.call.title);
+                setFlowCode(response.data.call.flow);
+                setContact(response.data.call.contact);
+                setPriority(response.data.call.priority);
+                setContact(response.data.call.richText);
+            });
+        }
+
+    }, []);
 
     return (
         <div>
@@ -257,7 +274,7 @@ export default function ModalPriceDetail({ callUuid, isOpen }) {
                     <Box sx={{ marginTop: '1.5rem', borderBottom: 1, borderColor: 'divider' }}>
                     </Box>
                 </DialogTitle>
-                <DialogContent sx={{ height: '62vh' }}>
+                <DialogContent sx={{ height: '63vh' }}>
                     {activeStep === steps.length ? (
                         <Box>
                             <Typography sx={{ mt: 2, mb: 1 }}>
@@ -350,14 +367,14 @@ export default function ModalPriceDetail({ callUuid, isOpen }) {
 
                             {activeStep === 2 && (
                                 <div>
-                                    <JoditEditor 
-                                    ref={editor} 
-                                    value={content} 
-                                    config={config}
-                                    onBlur={(newContent) => setContent(newContent)}
-                                    onChange={handleContentChange}
+                                    <JoditEditor
+                                        ref={editor}
+                                        value={content}
+                                        config={config}
+                                        onBlur={(newContent) => setContent(newContent)}
+                                        onChange={handleContentChange}
                                     />
-                                    <button onClick={handleClick}>Salvar</button>
+                                    {/* <button onClick={handleClick}>Salvar</button> */}
                                 </div>
                             )}
                         </Box>
@@ -383,7 +400,7 @@ export default function ModalPriceDetail({ callUuid, isOpen }) {
 
                         <Box sx={{ flex: '1 1 auto' }} />
 
-                        {activeStep === steps.length - 1 ? (<Button onClick={() => handleCall(callUuid, flowCode, information, priority, contact, title)}>Enviar</Button>) : (<Button onClick={handleNext}>Próximo</Button>)}
+                        {activeStep === steps.length - 1 ? (<Button onClick={() => handleCall(callUuid, flowCode, information, priority, contact, title, content)}>Enviar</Button>) : (<Button onClick={handleNext}>Próximo</Button>)}
                         {/* <Button onClick={handleNext}>
                             {activeStep === steps.length - 1 ? 'Enviar' : 'Próximo'}
                         </Button> */}

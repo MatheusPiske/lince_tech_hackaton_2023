@@ -60,3 +60,8 @@ code {
 .swal2-container.swal2-noanimation {
   z-index: 11000;
 } */
+
+.swal2-container.swal2-backdrop-show,
+.swal2-container.swal2-noanimation {
+  z-index: 11000;
+}
