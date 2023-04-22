@@ -3,14 +3,27 @@ import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormCon
 import { useState, useEffect } from "react";
 import { callUseCases } from "../useCases/CallUseCases";
 import Swal from 'sweetalert2'
+import ReactInputMask from "react-input-mask";
 
 const steps = ['Escolha um motivo', 'Informações', 'Descrição'];
 
-const stepFlow = [{ code: 1, label: 'ERRO DE SOFTWARE' }, { code: 2, label: 'MELHORIAS' }, { code: 3, label: 'DÚVIDAS' }, { code: 4, label: 'REUNUÕES E TREINAMENTOS' }, { code: 5, label: 'PROBLEMAS EQUIPAMENTOS' }, { code: 6, label: 'PROBLEMAS DE REDE' }, { code: 7, label: 'ESPECIFICAÇÕES DE EQUIPAMENTOS' }, { code: 8, label: 'LICENÇAS' }, { code: 9, label: 'MUDANÇA DE LAYOUT' }, { code: 10, label: 'LEVANTAMENTOS/MELHORIAS' }]
+// const stepFlow = [{ code: 1, label: 'ERRO DE SOFTWARE' }, { code: 2, label: 'MELHORIAS' }, { code: 3, label: 'DÚVIDAS' }, { code: 4, label: 'REUNUÕES E TREINAMENTOS' }, { code: 5, label: 'PROBLEMAS EQUIPAMENTOS' }, { code: 6, label: 'PROBLEMAS DE REDE' }, { code: 7, label: 'ESPECIFICAÇÕES DE EQUIPAMENTOS' }, { code: 8, label: 'LICENÇAS' }, { code: 9, label: 'MUDANÇA DE LAYOUT' }, { code: 10, label: 'LEVANTAMENTOS/MELHORIAS' }]
 
 const apps = [{ code: 1, label: 'SINGE' }, { code: 2, label: 'SALLE' }, { code: 3, label: 'CONNECT' }, { code: 4, label: 'DECOLA' }, { code: 4, label: 'MIAMI' }, { code: 5, label: 'OUTROS' }]
 
-export default function ModalPriceDetail({ isOpen }) {
+const Toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+        toast.addEventListener("mouseenter", Swal.stopTimer);
+        toast.addEventListener("mouseleave", Swal.resumeTimer);
+    },
+});
+
+export default function ModalPriceDetail({ callUuid, isOpen }) {
 
     const [open, setOpen] = useState(isOpen);
     const [scroll] = useState('body');
@@ -21,7 +34,11 @@ export default function ModalPriceDetail({ isOpen }) {
     const [flowCode, setFlowCode] = useState(0);
     const [software, setSoftware] = useState(0);
     const [erro, setErro] = useState(0);
-    const [property, setProperty] = useState(0);
+    const [priority, setPriority] = useState(0);
+    const [contact, setContact] = useState("");
+    const [title, setTitle] = useState("");
+    const [information, setInformation] = useState("");
+
     const [stepFlow, setStepFlow] = useState([]);
 
     const handleClose = () => {
@@ -37,6 +54,31 @@ export default function ModalPriceDetail({ isOpen }) {
             if (flowCode === null) {
                 error = 1;
                 menssage = 'Selecione um motivo de abertura de chamado';
+            }
+        }
+
+        if (activeStep === 1) {
+
+            if (flowCode === 1 || flowCode === 2 || flowCode === 3 || flowCode === 4) {
+                if (information === '' || title === '' || priority === 0 || contact === '') {
+                    error = 1;
+                }
+            }
+
+            if (flowCode === 5 || flowCode === 6) {
+                if (information === '' || title === '' || priority === 0 || contact === '') {
+                    error = 1;
+                }
+            }
+
+            if (flowCode === 7 || flowCode === 8 || flowCode === 9 || flowCode === 10) {
+                if (information === '' || title === '' || priority === 0 || contact === '') {
+                    error = 1;
+                }
+            }
+
+            if (error === 1) {
+                menssage = 'Preencha todos os campos para prosseguir';
             }
         }
 
@@ -70,8 +112,45 @@ export default function ModalPriceDetail({ isOpen }) {
         setErro(event.target.value);
     };
 
-    const handleChangeProperty = (event) => {
-        setProperty(event.target.value);
+    const handleChangePriority = (event) => {
+        setPriority(event.target.value);
+    }
+
+    const handleChangeContact = (event) => {
+        setContact(event.target.value);
+    }
+
+    const handleChangeTitle = (event) => {
+        setTitle(event.target.value);
+    }
+
+    const handleChangeInformation = (event) => {
+        setInformation(event.target.value);
+        console.log(event.target.value)
+    }
+
+    const handleCall = async (callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate) => {
+        console.log(flowCodeCreate);
+        console.log(firstFieldCreate);
+        console.log(priorityCreate);
+        console.log(contactCreate);
+        console.log(titleCreate);
+        const response = await callUseCases.postCreateCall(callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate);
+
+        if (!response.status) {
+            return Swal.fire({
+                icon: "error",
+                confirmButtonText: "OK",
+                text: "Connection error",
+            });
+        } else {
+            // parentCallback(true);
+            handleClose();
+            return Toast.fire({
+                icon: "success",
+                text: "Successfully registered",
+            });
+        }
     }
 
     useEffect(() => {
@@ -80,7 +159,6 @@ export default function ModalPriceDetail({ isOpen }) {
             return flowCodes;
         };
         getFlowCodes().then((response) => {
-            console.log(response)
             setStepFlow(response.data.flow)
         });
     }, []);
@@ -153,33 +231,21 @@ export default function ModalPriceDetail({ isOpen }) {
                                     sx={{ display: "grid", gap: '25px', gridTemplateColumns: '1fr 1fr', marginTop: '2rem' }}
                                 >
                                     {flowCode === 5 || flowCode === 6 ? (
-                                        <FormControl sx={{ m: 1, minWidth: 120 }} size="medium">
-                                            <InputLabel id="demo-select-medium-label">Erro</InputLabel>
-                                            <Select
-                                                labelId="demo-select-medium-label"
-                                                id="demo-select-medium"
-                                                value={erro}
-                                                label="Erro"
-                                                onChange={handleChangeErro}
-                                            >
-                                                <MenuItem value={1}>EQUIPAMENTO</MenuItem>
-                                                <MenuItem value={2}>PROBLEMA</MenuItem>
-                                            </Select>
-                                        </FormControl>
+                                        <FormControl sx={{ m: 1, minWidth: 120 }} size="medium"> <TextField inputProps={{ maxLength: 255 }} id="outlined-basic" label="Título" variant="outlined" value={information} onChange={handleChangeInformation} /> </FormControl>
                                     ) : flowCode === 7 || flowCode === 8 || flowCode === 9 || flowCode === 10 ? (
-                                        <FormControl sx={{ m: 1 }} size="medium"> <TextField id="outlined-basic" label="Informações" variant="outlined" /> </FormControl>
+                                        <FormControl sx={{ m: 1 }} size="medium"> <TextField id="outlined-basic" label="Informações" variant="outlined" value={information} onChange={handleChangeInformation} /> </FormControl>
                                     ) : (
                                         <FormControl sx={{ m: 1 }} size="medium">
                                             <InputLabel id="demo-select-medium-label">Software</InputLabel>
                                             <Select
                                                 labelId="demo-select-medium-label"
                                                 id="demo-select-medium"
-                                                value={software}
+                                                value={information}
                                                 label="Software"
-                                                onChange={handleChangeSoftware}
+                                                onChange={handleChangeInformation}
                                             >
                                                 {apps.map((app, index) => (
-                                                    <MenuItem key={index} value={app.code}>{app.label}</MenuItem>
+                                                    <MenuItem key={index} value={app.label}>{app.label}</MenuItem>
                                                 ))}
                                             </Select>
                                         </FormControl>
@@ -190,17 +256,28 @@ export default function ModalPriceDetail({ isOpen }) {
                                         <Select
                                             labelId="demo-select-medium-label"
                                             id="demo-select-medium"
-                                            value={property}
+                                            value={priority}
                                             label="Prioridade"
-                                            onChange={handleChangeProperty}
+                                            onChange={handleChangePriority}
                                         >
                                             <MenuItem value={1}>PADRÃO</MenuItem>
                                             <MenuItem value={2}>URGENTE</MenuItem>
                                         </Select>
                                     </FormControl>
 
-                                    <FormControl sx={{ m: 1, minWidth: 120 }} size="medium"> <TextField id="outlined-basic" label="Telefone para Contato" variant="outlined" /> </FormControl>
-                                    <FormControl sx={{ m: 1, minWidth: 120 }} size="medium"> <TextField id="outlined-basic" label="Título" variant="outlined" /> </FormControl>
+                                    <ReactInputMask
+                                        mask="+ (999) 9 99999-9999"
+                                        maskChar=""
+                                        onChange={handleChangeContact}
+                                        value={contact}
+                                    >
+                                        {() => (
+                                            <FormControl sx={{ m: 1, minWidth: 120 }} size="medium"> <TextField id="outlined-basic" label="Contato" variant="outlined" /> </FormControl>
+                                        )}
+                                    </ReactInputMask>
+
+                                    {/* <FormControl sx={{ m: 1, minWidth: 120 }} size="medium"> <TextField id="outlined-basic" label="Telefone para Contato" variant="outlined" value={contact} onChange={handleChangeContact} /> </FormControl> */}
+                                    <FormControl sx={{ m: 1, minWidth: 120 }} size="medium"> <TextField inputProps={{ maxLength: 60 }} id="outlined-basic" label="Título" variant="outlined" value={title} onChange={handleChangeTitle} /> </FormControl>
 
                                 </Box>
                             )}
@@ -231,9 +308,10 @@ export default function ModalPriceDetail({ isOpen }) {
 
                         <Box sx={{ flex: '1 1 auto' }} />
 
-                        <Button onClick={handleNext}>
+                        {activeStep === steps.length - 1 ? (<Button onClick={() => handleCall(callUuid, flowCode, information, priority, contact, title)}>Enviar</Button>) : (<Button onClick={handleNext}>Próximo</Button>)}
+                        {/* <Button onClick={handleNext}>
                             {activeStep === steps.length - 1 ? 'Enviar' : 'Próximo'}
-                        </Button>
+                        </Button> */}
                     </Box>
                 </DialogActions>
             </Dialog>

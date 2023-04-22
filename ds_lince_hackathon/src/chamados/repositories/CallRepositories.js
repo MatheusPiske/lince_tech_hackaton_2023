@@ -11,6 +11,25 @@ class CallRepositories {
         }
     }
 
+    async postCreateCall(callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate) {
+        try {
+            const response = await http.post("/call/create", {
+                numberCall: `5`,
+                title: `${titleCreate}`,
+                // flow: `${flowCodeCreate}`,
+                contact: `${contactCreate}`,
+                priority: `${priorityCreate}`,
+                author: `desconhecido`,
+                title: `${titleCreate}`,
+                originProblemS: `${firstFieldCreate}`
+
+            });
+            return response
+        } catch (error) {
+            console.log(`error: ${error}`);
+        }
+    }
+
 }
 
 export const callRepositories = new CallRepositories();
