@@ -17,12 +17,7 @@ import ModalCallFlow from '../components/modalCallFlow'
 import { createRoot } from "react-dom/client";
 import { Fab, Typography } from '@mui/material';
 
-import JoditEditor from 'jodit-react'
-import { useState, useEffect, useRef, useMemo } from "react";
-
 const Chamados = () => {
-  const editor = useRef(null)
-  const [content, setContent] = useState("")
 
   const [liberador, setLiberador] = React.useState('');
 
@@ -136,8 +131,6 @@ const Chamados = () => {
             </TableBody>
           </Table>
         </TableContainer>
-
-        <JoditEditor ref={editor} value={content} onChange={newContent => setContent(newContent)} />
 
         <input type="hidden" id="modal-price" />
       </section>
