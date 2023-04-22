@@ -45,6 +45,8 @@ export default function ModalPriceDetail({ callUuid, callCode, isOpen, userCre, 
     const editor = useRef(null)
     const [content, setContent] = useState("")
 
+    const [situation, setSituation] = useState(3);
+
     const config = {
         height: "60vh",
         buttons: [
@@ -194,9 +196,9 @@ export default function ModalPriceDetail({ callUuid, callCode, isOpen, userCre, 
         console.log(event.target.value)
     }
 
-    const handleCall = async (callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate, content) => {
+    const handleCall = async (callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate, content, situation) => {
         
-        const response = await callUseCases.postCreateCall(callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate, content, userCre);
+        const response = await callUseCases.postCreateCall(callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate, content, userCre, situation);
 
         if (!response.status) {
             return Swal.fire({
@@ -394,7 +396,7 @@ export default function ModalPriceDetail({ callUuid, callCode, isOpen, userCre, 
 
                         <Box sx={{ flex: '1 1 auto' }} />
 
-                        {activeStep === steps.length - 1 ? (<Button onClick={() => handleCall(callUuid, flowCode, information, priority, contact, title, content)}>Enviar</Button>) : (<Button onClick={handleNext}>Próximo</Button>)}
+                        {activeStep === steps.length - 1 ? (<Button onClick={() => handleCall(callUuid, flowCode, information, priority, contact, title, content, situation)}>Enviar</Button>) : (<Button onClick={handleNext}>Próximo</Button>)}
                         {/* <Button onClick={handleNext}>
                             {activeStep === steps.length - 1 ? 'Enviar' : 'Próximo'}
                         </Button> */}

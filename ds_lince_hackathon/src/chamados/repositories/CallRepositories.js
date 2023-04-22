@@ -27,8 +27,32 @@ class CallRepositories {
             console.log(`error: ${error}`);
         }
     }
+    async getCallCodeApprover() {
+        try {
+            const response = await http.get(`/call/approver`);
+            return response
+        } catch (error) {
+            console.log(`error: ${error}`);
+        }
+    }
+    async deleteFlowCall(callCode, situation) {
+        try {
+            const response = await http.post(`/call/update/${callCode}/${situation}`);
+            return response
+        } catch (error) {
+            console.log(`error: ${error}`);
+        }
+    }
+    async approveCall(callCode, situation) {
+        try {
+            const response = await http.post(`/call/update/${callCode}/${situation}`);
+            return response
+        } catch (error) {
+            console.log(`error: ${error}`);
+        }
+    }
 
-    async postCreateCall(callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate, contentCreate, user) {
+    async postCreateCall(callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate, contentCreate, user, situation) {
         try {
             const response = await http.post("/call/create", {
                 uuid: `${callUuid === undefined ? '' : callUuid}`,
@@ -42,6 +66,7 @@ class CallRepositories {
                 title: `${titleCreate}`,
                 originProblemS: `${firstFieldCreate}`,
                 richText: `${contentCreate}`,
+                situation: `${situation}`
                 // richText: `asdasdasd`,
 
             });

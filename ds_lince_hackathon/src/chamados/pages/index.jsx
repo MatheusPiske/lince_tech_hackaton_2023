@@ -23,6 +23,7 @@ import Button from '@mui/material/Button';
 import { IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 const Chamados = () => {
 
@@ -58,14 +59,6 @@ const Chamados = () => {
     return { name, calories, fat, carbs, protein };
   }
 
-  const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-  ];
-
   const handleOpenModalCall = (evt, uuid, code) => {
     evt.preventDefault();
     const container = document.getElementById("modal-price");
@@ -81,20 +74,28 @@ const Chamados = () => {
     );
   };
 
+  const handleDeleteItem = () => {
+
+  }
+
   const handleChangeEdit = () => {
     setChanged(!changed);
   };
 
   useEffect(() => {
     const getCallCodes = async () => {
-      const callCodes = await callUseCases.getCallCode();
-      return callCodes;
+      if (liberador == "normal") {
+        const callCodes = await callUseCases.getCallCode();
+        return callCodes;
+      } else {
+        const callCodes = await callUseCases.getCallCodeApprover();
+        return callCodes;
+      }
     };
     getCallCodes().then((response) => {
-      console.log('teste asdasdasd: ' + response.data.call)
       setCall(response.data.call)
     });
-  }, [changed]);
+  }, [changed, liberador]);
 
   return (
     <>
@@ -157,7 +158,8 @@ const Chamados = () => {
                   <StyledTableCell align="left">{(row.createDate)}</StyledTableCell>
                   <StyledTableCell align="right">{row.contact}</StyledTableCell>
                   <StyledTableCell align="right">{row.originProblemS}</StyledTableCell>
-                  <StyledTableCell align="center"><IconButton onClick={(evt) => handleOpenModalCall(evt, row.uuid, row.numberCall)}><EditIcon /></IconButton>&nbsp;&nbsp;<IconButton><DeleteIcon /></IconButton></StyledTableCell>
+                  <StyledTableCell align="center">
+                  <IconButton onClick={(evt) => handleOpenModalCall(evt, row.uuid, row.numberCall)}>{liberador === "normal" ? <EditIcon /> : <CheckCircleOutlineIcon/>}</IconButton>&nbsp;&nbsp;<IconButton  onClick={() => callUseCases.deleteFlowCall(row.numberCall, 1)}><DeleteIcon /></IconButton></StyledTableCell>
                 </StyledTableRow>
               ))}
             </TableBody>
