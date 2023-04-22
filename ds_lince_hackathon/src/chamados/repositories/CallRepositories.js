@@ -11,6 +11,15 @@ class CallRepositories {
         }
     }
 
+    async getCallCode() {
+        try {
+            const response = await http.get(`/call`);
+            return response
+        } catch (error) {
+            console.log(`error: ${error}`);
+        }
+    }
+
     async postCreateCall(callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate) {
         try {
             const response = await http.post("/call/create", {

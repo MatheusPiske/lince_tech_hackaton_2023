@@ -16,10 +16,19 @@ import Paper from '@mui/material/Paper';
 import ModalCallFlow from '../components/modalCallFlow'
 import { createRoot } from "react-dom/client";
 import { Fab, Typography } from '@mui/material';
+import { useState, useEffect } from "react";
+import { callUseCases } from "../useCases/CallUseCases";
+import Button from '@mui/material/Button';
+
+import { IconButton } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import moment from 'moment';
 
 const Chamados = () => {
 
   const [liberador, setLiberador] = React.useState('');
+  const [calls, setCall] = useState([]);
 
   const handleChange = (event) => {
     setLiberador(event.target.value)
@@ -68,6 +77,17 @@ const Chamados = () => {
     );
   };
 
+  useEffect(() => {
+    const getCallCodes = async () => {
+      const callCodes = await callUseCases.getCallCode();
+      return callCodes;
+    };
+    getCallCodes().then((response) => {
+      console.log(response.data.flow)
+      setCall(response.data.call)
+    });
+  }, []);
+
   return (
     <>
       <section className="home-section">
@@ -108,24 +128,28 @@ const Chamados = () => {
                 <StyledTableCell align="right">Aprovador</StyledTableCell>
                 <StyledTableCell align="right">Fluxo</StyledTableCell>
                 <StyledTableCell align="right">Último usuário</StyledTableCell>
+                <StyledTableCell align="left">Data de criação</StyledTableCell>
                 <StyledTableCell align="right">Contato</StyledTableCell>
                 <StyledTableCell align="right">Origem</StyledTableCell>
+                <StyledTableCell align="center">Ação</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row) => (
-                <StyledTableRow key={row.name}>
+              {calls.map((row) => (
+                <StyledTableRow key={row.uuid}>
                   <StyledTableCell component="th" scope="row">
-                    {row.name}
+                    {row.numberCall}
                   </StyledTableCell>
-                  <StyledTableCell align="right">{row.calories}</StyledTableCell>
-                  <StyledTableCell align="right">{row.fat}</StyledTableCell>
-                  <StyledTableCell align="right">{row.carbs}</StyledTableCell>
-                  <StyledTableCell align="right">{row.protein}</StyledTableCell>
-                  <StyledTableCell align="right">{row.protein}</StyledTableCell>
-                  <StyledTableCell align="right">{row.protein}</StyledTableCell>
-                  <StyledTableCell align="right">{row.protein}</StyledTableCell>
-                  <StyledTableCell align="right">{row.protein}</StyledTableCell>
+                  <StyledTableCell align="right">{row.title}</StyledTableCell>
+                  <StyledTableCell align="right">{row.author}</StyledTableCell>
+                  <StyledTableCell align="right">{row.priority}</StyledTableCell>
+                  <StyledTableCell align="right">{ }</StyledTableCell>
+                  <StyledTableCell align="right">{row.flow}</StyledTableCell>
+                  <StyledTableCell align="right">{ }</StyledTableCell>
+                  <StyledTableCell align="left">{moment(row.createDate).format('DD/MM/YYYY HH:mm:ss')}</StyledTableCell>
+                  <StyledTableCell align="right">{row.contact}</StyledTableCell>
+                  <StyledTableCell align="right">{row.originProblemS}</StyledTableCell>
+                  <StyledTableCell align="center"><IconButton><EditIcon style={{color: "blue"}}/></IconButton>&nbsp;&nbsp;<IconButton><DeleteIcon style={{color: "red"}}/></IconButton></StyledTableCell>
                 </StyledTableRow>
               ))}
             </TableBody>
