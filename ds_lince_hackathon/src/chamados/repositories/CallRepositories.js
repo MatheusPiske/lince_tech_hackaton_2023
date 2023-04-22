@@ -19,16 +19,26 @@ class CallRepositories {
             console.log(`error: ${error}`);
         }
     }
+    async getCallCode() {
+        try {
+            const response = await http.get(`/call`);
+            return response
+        } catch (error) {
+            console.log(`error: ${error}`);
+        }
+    }
 
-    async postCreateCall(callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate, contentCreate) {
+    async postCreateCall(callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate, contentCreate, user) {
         try {
             const response = await http.post("/call/create", {
                 uuid: `${callUuid === undefined ? '' : callUuid}`,
                 title: `${titleCreate}`,
-                //flow: `${flowCodeCreate}`,
+                flow: {
+                    uuid: `${flowCodeCreate}`
+                },
                 contact: `${contactCreate}`,
                 priority: `${priorityCreate}`,
-                author: `desconhecido`,
+                author: `${user}`,
                 title: `${titleCreate}`,
                 originProblemS: `${firstFieldCreate}`,
                 richText: `${contentCreate}`,

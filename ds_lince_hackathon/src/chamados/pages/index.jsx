@@ -16,10 +16,19 @@ import Paper from '@mui/material/Paper';
 import ModalCallFlow from '../components/modalCallFlow'
 import { createRoot } from "react-dom/client";
 import { Fab, Typography } from '@mui/material';
+import { useState, useEffect } from "react";
+import { callUseCases } from "../useCases/CallUseCases";
+import Button from '@mui/material/Button';
+
+import { IconButton } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const Chamados = () => {
 
-  const [liberador, setLiberador] = React.useState('');
+  const [liberador, setLiberador] = useState('normal');
+  const [calls, setCall] = useState([]);
+  const [changed, setChanged] = useState("");
 
   const handleChange = (event) => {
     setLiberador(event.target.value)
@@ -61,15 +70,31 @@ const Chamados = () => {
     evt.preventDefault();
     const container = document.getElementById("modal-price");
     const root = createRoot(container);
-    console.log(code)
     return root.render(
       <ModalCallFlow
         isOpen={true}
         callUuid={uuid}
         callCode={code}
+        parentCallback={handleChangeEdit}
+        userCre={liberador}
       />
     );
   };
+
+  const handleChangeEdit = () => {
+    setChanged(!changed);
+  };
+
+  useEffect(() => {
+    const getCallCodes = async () => {
+      const callCodes = await callUseCases.getCallCode();
+      return callCodes;
+    };
+    getCallCodes().then((response) => {
+      console.log('teste asdasdasd: ' + response.data.call)
+      setCall(response.data.call)
+    });
+  }, [changed]);
 
   return (
     <>
@@ -93,8 +118,8 @@ const Chamados = () => {
                 label="liberador"
                 onChange={handleChange}
               >
-                <MenuItem value={10}>Usuário</MenuItem>
-                <MenuItem value={20}>Aprovador</MenuItem>
+                <MenuItem value={'normal'}>Usuário</MenuItem>
+                <MenuItem value={'liberador'}>Aprovador</MenuItem>
               </Select>
             </FormControl>
           </Box>
@@ -111,24 +136,28 @@ const Chamados = () => {
                 <StyledTableCell align="right">Aprovador</StyledTableCell>
                 <StyledTableCell align="right">Fluxo</StyledTableCell>
                 <StyledTableCell align="right">Último usuário</StyledTableCell>
+                <StyledTableCell align="left">Data de criação</StyledTableCell>
                 <StyledTableCell align="right">Contato</StyledTableCell>
                 <StyledTableCell align="right">Origem</StyledTableCell>
+                <StyledTableCell align="center">Ação</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row) => (
-                <StyledTableRow key={row.name}>
+              {calls.map((row) => (
+                <StyledTableRow key={row.uuid}>
                   <StyledTableCell component="th" scope="row">
-                    {row.name}
+                    {row.numberCall}
                   </StyledTableCell>
-                  <StyledTableCell align="right">{row.calories}</StyledTableCell>
-                  <StyledTableCell align="right">{row.fat}</StyledTableCell>
-                  <StyledTableCell align="right">{row.carbs}</StyledTableCell>
-                  <StyledTableCell align="right">{row.protein}</StyledTableCell>
-                  <StyledTableCell align="right">{row.protein}</StyledTableCell>
-                  <StyledTableCell align="right">{row.protein}</StyledTableCell>
-                  <StyledTableCell align="right">{row.protein}</StyledTableCell>
-                  <StyledTableCell align="right">{row.protein}</StyledTableCell>
+                  <StyledTableCell align="right">{row.title}</StyledTableCell>
+                  <StyledTableCell align="right">{row.author}</StyledTableCell>
+                  <StyledTableCell align="right">{row.priority}</StyledTableCell>
+                  <StyledTableCell align="right">{ }</StyledTableCell>
+                  <StyledTableCell align="right">{row.flow.number}</StyledTableCell>
+                  <StyledTableCell align="right">{ }</StyledTableCell>
+                  <StyledTableCell align="left">{(row.createDate)}</StyledTableCell>
+                  <StyledTableCell align="right">{row.contact}</StyledTableCell>
+                  <StyledTableCell align="right">{row.originProblemS}</StyledTableCell>
+                  <StyledTableCell align="center"><IconButton onClick={(evt) => handleOpenModalCall(evt, row.uuid, row.numberCall)}><EditIcon /></IconButton>&nbsp;&nbsp;<IconButton><DeleteIcon /></IconButton></StyledTableCell>
                 </StyledTableRow>
               ))}
             </TableBody>
@@ -151,21 +180,6 @@ const Chamados = () => {
         onClick={(evt) => handleOpenModalCall(evt)}
       >
         Criar Chamado
-      </Fab>
-
-      <Fab sx={{
-        position: 'absolute',
-        bottom: 80,
-        right: 80,
-        fontWeight: 'bold',
-        backgroundColor: '#002754'
-      }}
-        variant="extended"
-        size="large"
-        color="primary"
-        onClick={(evt) => handleOpenModalCall(evt, 'a794cd5c-be17-4ec2-8392-3caea9ae96f9', 1)}
-      >
-        UPDATE
       </Fab>
     </>
   )

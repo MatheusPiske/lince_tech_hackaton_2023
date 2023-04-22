@@ -23,7 +23,7 @@ const Toast = Swal.mixin({
     },
 });
 
-export default function ModalPriceDetail({ callUuid, callCode, isOpen }) {
+export default function ModalPriceDetail({ callUuid, callCode, isOpen, userCre, parentCallback }) {
 
     const [open, setOpen] = useState(isOpen);
     const [scroll] = useState('body');
@@ -195,14 +195,8 @@ export default function ModalPriceDetail({ callUuid, callCode, isOpen }) {
     }
 
     const handleCall = async (callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate, content) => {
-        console.log(flowCodeCreate);
-        console.log(firstFieldCreate);
-        console.log(priorityCreate);
-        console.log(contactCreate);
-        console.log(titleCreate);
-        console.log(content);
-        console.log(callUuid);
-        const response = await callUseCases.postCreateCall(callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate, content);
+        
+        const response = await callUseCases.postCreateCall(callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate, content, userCre);
 
         if (!response.status) {
             return Swal.fire({
@@ -211,7 +205,7 @@ export default function ModalPriceDetail({ callUuid, callCode, isOpen }) {
                 text: "Connection error",
             });
         } else {
-            // parentCallback(true);
+            parentCallback(true);
             handleClose();
             return Toast.fire({
                 icon: "success",
@@ -238,10 +232,10 @@ export default function ModalPriceDetail({ callUuid, callCode, isOpen }) {
                 // setFlowCall(response.data.call)
                 setInformation(response.data.call.originProblemS)
                 setTitle(response.data.call.title);
-                setFlowCode(response.data.call.flow);
+                setFlowCode(response.data.call.flow.uuid);
                 setContact(response.data.call.contact);
                 setPriority(response.data.call.priority);
-                setContact(response.data.call.richText);
+                setContent(response.data.call.richText);
             });
         }
 
@@ -295,7 +289,7 @@ export default function ModalPriceDetail({ callUuid, callCode, isOpen }) {
                                     >
                                         {stepFlow.map((flow, index) => (
 
-                                            <ToggleButton sx={{ padding: '15px', fontSize: '12pt' }} key={index} value={flow.number}>{flow.description}</ToggleButton>
+                                            <ToggleButton sx={{ padding: '15px', fontSize: '12pt' }} key={index} value={flow.uuid}>{flow.description}</ToggleButton>
 
                                             // <Paper
                                             //     sx={{ padding: '30px', fontSize: '12pt' }}
