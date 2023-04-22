@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, Step, StepLabel, Stepper, TextField, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { callUseCases } from "../useCases/CallUseCases";
 import Swal from 'sweetalert2'
+import JoditEditor from 'jodit-react'
+import _ from 'lodash';
 import ReactInputMask from "react-input-mask";
 
 const steps = ['Escolha um motivo', 'Informações', 'Descrição'];
@@ -40,6 +42,66 @@ export default function ModalPriceDetail({ callUuid, isOpen }) {
     const [information, setInformation] = useState("");
 
     const [stepFlow, setStepFlow] = useState([]);
+
+    const editor = useRef(null)
+    const [content, setContent] = useState("")
+
+    const config = {
+        height: "60vh",
+        buttons: [
+            'bold',
+            'italic',
+            'underline',
+            'strike',
+            'superscript',
+            'subscript',
+            'ul',
+            'ol',
+            'outdent',
+            'indent',
+            'font',
+            'fontsize',
+            'brush',
+            'paragraph',
+            'table',
+            'unlink',
+            'align',
+            'undo',
+            'redo',
+            'selectall',
+            'cut',
+            'copy',
+            'paste',
+            'hr',
+            'eraser',
+            'symbol',
+            'fullsize',
+            'print',
+            'about',
+            'color',
+            'source',
+          ],
+        uploader: {
+            url: '/path/to/upload',
+            method: 'POST',
+            format: 'json',
+            filesVariableName: 'files',
+            prepareData: (formData) => formData,
+            isSuccess: (response) => response.status === 200,
+            getMsg: (response) => response.message,
+            process: (response) => response.data,
+          },
+          filebrowser: {
+            ajax: {
+              url: '/path/to/browse',
+              data: {},
+            },
+        },
+    };
+   
+    const handleContentChange = _.debounce((newContent) => {
+        setContent(newContent);
+    }, 10000);
 
     const handleClose = () => {
         setOpen(false);
@@ -94,6 +156,10 @@ export default function ModalPriceDetail({ callUuid, isOpen }) {
             })
         }
 
+    };
+
+    const handleClick = async () => {
+        console.log(content);
     };
 
     const handleBack = () => {
@@ -283,7 +349,16 @@ export default function ModalPriceDetail({ callUuid, isOpen }) {
                             )}
 
                             {activeStep === 2 && (
-                                <Box>tes 3</Box>
+                                <div>
+                                    <JoditEditor 
+                                    ref={editor} 
+                                    value={content} 
+                                    config={config}
+                                    onBlur={(newContent) => setContent(newContent)}
+                                    onChange={handleContentChange}
+                                    />
+                                    <button onClick={handleClick}>Salvar</button>
+                                </div>
                             )}
                         </Box>
                     )}
