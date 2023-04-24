@@ -5,9 +5,8 @@ import { callUseCases } from "../useCases/CallUseCases";
 import Swal from 'sweetalert2'
 import JoditEditor from 'jodit-react'
 import _ from 'lodash';
-import ReactInputMask from "react-input-mask";
 
-const steps = ['Escolha um motivo', 'Informações', 'Descrição'];
+const steps = ['Descreva o motivo da reprovação'];
 
 const apps = [{ code: 1, label: 'SINGE' }, { code: 2, label: 'SALLE' }, { code: 3, label: 'CONNECT' }, { code: 4, label: 'DECOLA' }, { code: 4, label: 'MIAMI' }, { code: 5, label: 'OUTROS' }]
 
@@ -23,7 +22,7 @@ const Toast = Swal.mixin({
     },
 });
 
-export default function ModalPriceDetail({ callUuid, callCode, isOpen, userCre, parentCallback }) {
+export default function ModalCallReprove({ callUuid, callCode, isOpen, userCre, parentCallback }) {
 
     const [open, setOpen] = useState(isOpen);
     const [scroll] = useState('body');
@@ -32,8 +31,7 @@ export default function ModalPriceDetail({ callUuid, callCode, isOpen, userCre, 
     const [skipped, setSkipped] = useState(new Set());
 
     const [flowCode, setFlowCode] = useState(0);
-    // const [software, setSoftware] = useState(0);
-    // const [erro, setErro] = useState(0);
+
     const [priority, setPriority] = useState(0);
     const [contact, setContact] = useState("");
     const [title, setTitle] = useState("");
@@ -81,13 +79,12 @@ export default function ModalPriceDetail({ callUuid, callCode, isOpen, userCre, 
             'about',
             'color',
             'source',
-            'image',
         ],
         uploader: {
-            //url: '/path/to/upload',
+            url: '/path/to/upload',
             method: 'POST',
             format: 'json',
-            //filesVariableName: 'files',
+            filesVariableName: 'files',
             prepareData: (formData) => formData,
             isSuccess: (response) => response.status === 200,
             getMsg: (response) => response.message,
@@ -160,10 +157,6 @@ export default function ModalPriceDetail({ callUuid, callCode, isOpen, userCre, 
 
     };
 
-    // const handleClick = async () => {
-    //     console.log(content);
-    // };
-
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
@@ -171,14 +164,6 @@ export default function ModalPriceDetail({ callUuid, callCode, isOpen, userCre, 
     const handleChangeFlowCode = (event, newFlowCode) => {
         setFlowCode(newFlowCode);
     };
-
-    // const handleChangeSoftware = (event) => {
-    //     setSoftware(event.target.value);
-    // };
-
-    // const handleChangeErro = (event) => {
-    //     setErro(event.target.value);
-    // };
 
     const handleChangePriority = (event) => {
         setPriority(event.target.value);
@@ -256,17 +241,10 @@ export default function ModalPriceDetail({ callUuid, callCode, isOpen, userCre, 
                 <DialogTitle>
                     <Box>
                         <Stepper sx={{ marginTop: '1rem' }} activeStep={activeStep}>
-                            {steps.map((label, index) => {
-                                const stepProps = {};
-                                const labelProps = {};
-                                return (
-                                    <Step key={label} {...stepProps}>
-                                        <StepLabel {...labelProps}>{label}</StepLabel>
-                                    </Step>
-                                );
-                            })}
+                            <Step key={"Descreva o motivo da reprovação"}>
+                                <StepLabel>{"Descreva o motivo da reprovação"}</StepLabel>
+                            </Step>  
                         </Stepper>
-
                     </Box>
                     <Box sx={{ marginTop: '1.5rem', borderBottom: 1, borderColor: 'divider' }}>
                     </Box>
@@ -280,100 +258,13 @@ export default function ModalPriceDetail({ callUuid, callCode, isOpen, userCre, 
                         </Box>
                     ) : (
                         <Box>
-                            {activeStep === 0 && (
-                                <Box sx={{ marginTop: '2rem' }}>
-                                    <ToggleButtonGroup
-                                        sx={{ display: "grid", gap: '25px', gridTemplateColumns: '1fr 1fr' }}
-                                        orientation="vertical"
-                                        color="primary"
-                                        value={flowCode}
-                                        exclusive
-                                        onChange={handleChangeFlowCode}
-                                    >
-                                        {stepFlow.map((flow, index) => (
-
-                                            <ToggleButton sx={{ padding: '15px', fontSize: '12pt' }} key={index} value={flow.uuid}>{flow.description}</ToggleButton>
-
-                                            // <Paper
-                                            //     sx={{ padding: '30px', fontSize: '12pt' }}
-                                            //     id={index} elevation={1} value={flow.code}
-                                            // >
-                                            //     {flow.label}
-                                            // </Paper>
-                                        ))}
-                                    </ToggleButtonGroup>
-
-                                </Box>
-                            )}
-
-                            {activeStep === 1 && (
-                                <Box
-                                    sx={{ display: "grid", gap: '25px', gridTemplateColumns: '1fr 1fr', marginTop: '2rem' }}
-                                >
-                                    {flowCode === 5 || flowCode === 6 ? (
-                                        <FormControl sx={{ m: 1, minWidth: 120 }} size="medium"> <TextField inputProps={{ maxLength: 255 }} id="outlined-basic" label="Título" variant="outlined" value={information} onChange={handleChangeInformation} /> </FormControl>
-                                    ) : flowCode === 7 || flowCode === 8 || flowCode === 9 || flowCode === 10 ? (
-                                        <FormControl sx={{ m: 1 }} size="medium"> <TextField id="outlined-basic" label="Informações" variant="outlined" value={information} onChange={handleChangeInformation} /> </FormControl>
-                                    ) : (
-                                        <FormControl sx={{ m: 1 }} size="medium">
-                                            <InputLabel id="demo-select-medium-label">Software</InputLabel>
-                                            <Select
-                                                labelId="demo-select-medium-label"
-                                                id="demo-select-medium"
-                                                value={information}
-                                                label="Software"
-                                                onChange={handleChangeInformation}
-                                            >
-                                                {apps.map((app, index) => (
-                                                    <MenuItem key={index} value={app.label}>{app.label}</MenuItem>
-                                                ))}
-                                            </Select>
-                                        </FormControl>
-                                    )}
-
-                                    <FormControl sx={{ m: 1, minWidth: 120 }} size="medium">
-                                        <InputLabel id="demo-select-medium-label">Prioridade</InputLabel>
-                                        <Select
-                                            labelId="demo-select-medium-label"
-                                            id="demo-select-medium"
-                                            value={priority}
-                                            label="Prioridade"
-                                            onChange={handleChangePriority}
-                                        >
-                                            <MenuItem value={1}>PADRÃO</MenuItem>
-                                            <MenuItem value={2}>URGENTE</MenuItem>
-                                        </Select>
-                                    </FormControl>
-
-                                    <ReactInputMask
-                                        mask="+ (999) 9 99999-9999"
-                                        maskChar=""
-                                        onChange={handleChangeContact}
-                                        value={contact}
-                                    >
-                                        {() => (
-                                            <FormControl sx={{ m: 1, minWidth: 120 }} size="medium"> <TextField id="outlined-basic" label="Contato" variant="outlined" /> </FormControl>
-                                        )}
-                                    </ReactInputMask>
-
-                                    {/* <FormControl sx={{ m: 1, minWidth: 120 }} size="medium"> <TextField id="outlined-basic" label="Telefone para Contato" variant="outlined" value={contact} onChange={handleChangeContact} /> </FormControl> */}
-                                    <FormControl sx={{ m: 1, minWidth: 120 }} size="medium"> <TextField inputProps={{ maxLength: 60 }} id="outlined-basic" label="Título" variant="outlined" value={title} onChange={handleChangeTitle} /> </FormControl>
-
-                                </Box>
-                            )}
-
-                            {activeStep === 2 && (
-                                <div>
-                                    <JoditEditor
-                                        ref={editor}
-                                        value={content}
-                                        config={config}
-                                        onBlur={(newContent) => setContent(newContent)}
-                                        onChange={handleContentChange}
-                                    />
-                                    {/* <button onClick={handleClick}>Salvar</button> */}
-                                </div>
-                            )}
+                            <JoditEditor
+                                ref={editor}
+                                value={content}
+                                config={config}
+                                onBlur={(newContent) => setContent(newContent)}
+                                onChange={handleContentChange}
+                            /> 
                         </Box>
                     )}
                 </DialogContent>
@@ -398,9 +289,6 @@ export default function ModalPriceDetail({ callUuid, callCode, isOpen, userCre, 
                         <Box sx={{ flex: '1 1 auto' }} />
 
                         {activeStep === steps.length - 1 ? (<Button onClick={() => handleCall(callUuid, flowCode, information, priority, contact, title, content, situation)}>Enviar</Button>) : (<Button onClick={handleNext}>Próximo</Button>)}
-                        {/* <Button onClick={handleNext}>
-                            {activeStep === steps.length - 1 ? 'Enviar' : 'Próximo'}
-                        </Button> */}
                     </Box>
                 </DialogActions>
             </Dialog>

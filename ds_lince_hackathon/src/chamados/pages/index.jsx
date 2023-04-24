@@ -14,6 +14,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import ModalCallFlow from '../components/modalCallFlow'
+import ModalCallReprove from '../components/modalCallReprove';
 import { createRoot } from "react-dom/client";
 import { Fab, Typography } from '@mui/material';
 import { useState, useEffect } from "react";
@@ -24,6 +25,7 @@ import { IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const Chamados = () => {
 
@@ -74,13 +76,36 @@ const Chamados = () => {
     );
   };
 
-  const handleDeleteItem = () => {
-
+  const handleOpenModalCallReprove = (evt, uuid, code) => {
+    evt.preventDefault();
+    const container = document.getElementById("modal-reprove");
+    const root = createRoot(container);
+    return root.render(
+      <ModalCallReprove
+        isOpen={true}
+        callUuid={uuid}
+        callCode={code}
+        parentCallback={handleChangeEdit}
+        userCre={liberador}
+      />
+    );
   }
 
   const handleChangeEdit = () => {
     setChanged(!changed);
   };
+
+  const handleClick = (evt, uuid, numberCall, situation) => {
+    if (liberador === "normal") {
+        handleOpenModalCall(evt, uuid, numberCall);
+    } else {
+      callUseCases.approveCall(numberCall, situation)
+    }
+  }
+
+  const handleReprove = (evt, uuid, numberCall, situation) => {
+    handleOpenModalCallReprove(evt, uuid, numberCall);
+  }
 
   useEffect(() => {
     const getCallCodes = async () => {
@@ -126,7 +151,7 @@ const Chamados = () => {
           </Box>
         </div>
 
-        <TableContainer component={Paper} sx={{ padding: "20px", boxShadow: "none", borderRadius: "75px" }}>
+        <TableContainer component={Paper} sx={{ padding: "20px", boxShadow: "none", borderRadius: "75px", marginBottom: "50px" }}>
           <Table sx={{ minWidth: 700 }} aria-label="customized table">
             <TableHead>
               <TableRow>
@@ -159,7 +184,8 @@ const Chamados = () => {
                   <StyledTableCell align="right">{row.contact}</StyledTableCell>
                   <StyledTableCell align="right">{row.originProblemS}</StyledTableCell>
                   <StyledTableCell align="center">
-                  <IconButton onClick={(evt) => handleOpenModalCall(evt, row.uuid, row.numberCall)}>{liberador === "normal" ? <EditIcon /> : <CheckCircleOutlineIcon/>}</IconButton>&nbsp;&nbsp;<IconButton  onClick={() => callUseCases.deleteFlowCall(row.numberCall, 1)}><DeleteIcon /></IconButton></StyledTableCell>
+                  <IconButton id="situationButton" onClick={(evt) => handleClick(evt, row.uuid, row.numberCall, 4)}>{liberador === "normal" ? <EditIcon /> : <CheckCircleOutlineIcon/>}</IconButton>{liberador != "normal" ? <IconButton><CancelIcon onClick={(evt) => handleReprove(evt, row.uuid, row.numberCall)}/></IconButton> : ""}<IconButton  onClick={() => callUseCases.deleteFlowCall(row.numberCall, 1)}><DeleteIcon /></IconButton>
+                  </StyledTableCell>
                 </StyledTableRow>
               ))}
             </TableBody>
@@ -167,10 +193,11 @@ const Chamados = () => {
         </TableContainer>
 
         <input type="hidden" id="modal-price" />
+        <input type="hidden" id="modal-reprove" />
       </section>
 
       <Fab sx={{
-        position: 'absolute',
+        position: 'fixed',
         bottom: 18,
         right: 18,
         fontWeight: 'bold',
