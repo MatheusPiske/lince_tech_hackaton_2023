@@ -102,6 +102,7 @@ export default function ModalPriceDetail({ callUuid, callCode, isOpen, userCre, 
     };
 
     const handleContentChange = _.debounce((newContent) => {
+        localStorage.setItem("content", newContent)
         setContent(newContent);
     }, 10000);
 
@@ -170,6 +171,7 @@ export default function ModalPriceDetail({ callUuid, callCode, isOpen, userCre, 
 
     const handleChangeFlowCode = (event, newFlowCode) => {
         setFlowCode(newFlowCode);
+        localStorage.setItem("flow", newFlowCode)
     };
 
     // const handleChangeSoftware = (event) => {
@@ -182,22 +184,35 @@ export default function ModalPriceDetail({ callUuid, callCode, isOpen, userCre, 
 
     const handleChangePriority = (event) => {
         setPriority(event.target.value);
+        localStorage.setItem("priority", event.target.value)
     }
 
     const handleChangeContact = (event) => {
         setContact(event.target.value);
+        localStorage.setItem("contact", event.target.value)
     }
 
     const handleChangeTitle = (event) => {
         setTitle(event.target.value);
+        localStorage.setItem("title", event.target.value)
     }
 
     const handleChangeInformation = (event) => {
         setInformation(event.target.value);
+        localStorage.setItem("information", event.target.value)
         console.log(event.target.value)
     }
 
     const handleCall = async (callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate, content, situation) => {
+        if (localStorage.getItem("information") || localStorage.getItem("title") || localStorage.getItem("flow") || localStorage.getItem("contact") || localStorage.getItem("priority") || setContent(localStorage.getItem("content"))) {
+            localStorage.removeItem("information")
+            localStorage.removeItem("title")
+            localStorage.removeItem("flow")
+            localStorage.removeItem("contact")
+            localStorage.removeItem("priority")
+            localStorage.removeItem("content")
+            setContent("")
+        }
         
         const response = await callUseCases.postCreateCall(callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate, content, userCre, situation);
 
@@ -240,6 +255,13 @@ export default function ModalPriceDetail({ callUuid, callCode, isOpen, userCre, 
                 setPriority(response.data.call.priority);
                 setContent(response.data.call.richText);
             });
+        } else if (callCode < 0) {
+            setInformation(localStorage.getItem("information"))
+            setTitle(localStorage.getItem("title"));
+            setFlowCode(localStorage.getItem("flow"));
+            setContact(localStorage.getItem("contact"));
+            setPriority(localStorage.getItem("priority"));
+            setContent(localStorage.getItem("content"));
         }
 
     }, []);
@@ -370,6 +392,7 @@ export default function ModalPriceDetail({ callUuid, callCode, isOpen, userCre, 
                                         config={config}
                                         onBlur={(newContent) => setContent(newContent)}
                                         onChange={handleContentChange}
+                                        id="richText"
                                     />
                                     {/* <button onClick={handleClick}>Salvar</button> */}
                                 </div>

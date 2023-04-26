@@ -105,7 +105,6 @@ function App() {
       </li>
       </ul>
       </div>
-      <p>asdasdas</p>
       <Rotas />
   </>
   )

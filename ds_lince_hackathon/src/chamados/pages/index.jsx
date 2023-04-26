@@ -206,7 +206,7 @@ const Chamados = () => {
         variant="extended"
         size="large"
         color="primary"
-        onClick={(evt) => handleOpenModalCall(evt)}
+        onClick={localStorage.getItem("flow") !== "" ? (evt) => handleOpenModalCall(evt, 1, -1) : (evt) => handleOpenModalCall(evt)}
       >
         Criar Chamado
       </Fab>
