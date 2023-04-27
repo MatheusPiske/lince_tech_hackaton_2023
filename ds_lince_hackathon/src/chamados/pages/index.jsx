@@ -16,7 +16,7 @@ import Paper from '@mui/material/Paper';
 import ModalCallFlow from '../components/modalCallFlow'
 import ModalCallReprove from '../components/modalCallReprove';
 import { createRoot } from "react-dom/client";
-import { Fab, Typography } from '@mui/material';
+import { Fab, Tooltip, Typography } from '@mui/material';
 import { useState, useEffect } from "react";
 import { callUseCases } from "../useCases/CallUseCases";
 import Button from '@mui/material/Button';
@@ -101,6 +101,11 @@ const Chamados = () => {
     } else {
       callUseCases.approveCall(numberCall, situation)
     }
+
+    if (liberador != "normal") {
+      window.location.href = '/chamados';
+      setLiberador("aprovador")
+    }
   }
 
   const handleReprove = (evt, uuid, numberCall, situation) => {
@@ -136,12 +141,12 @@ const Chamados = () => {
 
           <Box sx={{ minWidth: 150, padding: "20px 20px 0 0" }} id="selectLiberador">
             <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Liberador</InputLabel>
+              <InputLabel id="demo-simple-select-label">Visualização</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 value={liberador}
-                label="liberador"
+                label="Visualização"
                 onChange={handleChange}
               >
                 <MenuItem value={'normal'}>Usuário</MenuItem>
@@ -166,6 +171,7 @@ const Chamados = () => {
                 <StyledTableCell align="right">Contato</StyledTableCell>
                 <StyledTableCell align="right">Origem</StyledTableCell>
                 <StyledTableCell align="center">Ação</StyledTableCell>
+                <StyledTableCell align="center">Situação</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -184,8 +190,12 @@ const Chamados = () => {
                   <StyledTableCell align="right">{row.contact}</StyledTableCell>
                   <StyledTableCell align="right">{row.originProblemS}</StyledTableCell>
                   <StyledTableCell align="center">
-                  <IconButton id="situationButton" onClick={(evt) => handleClick(evt, row.uuid, row.numberCall, 4)}>{liberador === "normal" ? <EditIcon /> : <CheckCircleOutlineIcon/>}</IconButton>{liberador != "normal" ? <IconButton><CancelIcon onClick={(evt) => handleReprove(evt, row.uuid, row.numberCall)}/></IconButton> : ""}<IconButton  onClick={() => callUseCases.deleteFlowCall(row.numberCall, 1)}><DeleteIcon /></IconButton>
+                  <IconButton id="situationButton" onClick={(evt) => handleClick(evt, row.uuid, row.numberCall, 0)}>{liberador === "normal" ? <EditIcon /> : <CheckCircleOutlineIcon/>}</IconButton>{liberador != "normal" ? <IconButton><CancelIcon onClick={(evt) => handleReprove(evt, row.uuid, row.numberCall)}/></IconButton> : ""}<IconButton  onClick={() => ( 
+                  callUseCases.deleteFlowCall(row.numberCall, 1), 
+                  window.location.href = '/chamados'
+                  )}><DeleteIcon /></IconButton>
                   </StyledTableCell>
+                  <StyledTableCell align="center"><Tooltip title={<span dangerouslySetInnerHTML={{__html: row.reason}}></span>}><div>{row.situation == 0 ? "Aprovado" : row.situation == 4 ? "Reprovado" : row.situation == 3 ? "Pendente de aprovação" : "Situação desconhecida"}</div></Tooltip></StyledTableCell>
                 </StyledTableRow>
               ))}
             </TableBody>
@@ -206,7 +216,7 @@ const Chamados = () => {
         variant="extended"
         size="large"
         color="primary"
-        onClick={localStorage.getItem("flow") !== "" ? (evt) => handleOpenModalCall(evt, 1, -1) : (evt) => handleOpenModalCall(evt)}
+        onClick={localStorage.getItem("flow") !== "" ? (evt) => handleOpenModalCall(evt, "", -1) : (evt) => handleOpenModalCall(evt)}
       >
         Criar Chamado
       </Fab>

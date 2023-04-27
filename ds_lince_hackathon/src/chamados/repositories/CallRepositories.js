@@ -76,6 +76,17 @@ class CallRepositories {
         }
     }
 
+    async postReproveCall(callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate, contentCreate, user, situation, reasonReprove) {
+        console.log(reasonReprove)
+        try {
+            const response = await http.post(`/call/updateReason/${callUuid}/${situation}`, {
+            reason: `${reasonReprove}`
+        });
+            return response
+        } catch (error) {
+            console.log(`error: ${error}`);
+        }
+    }
 }
 
 export const callRepositories = new CallRepositories();

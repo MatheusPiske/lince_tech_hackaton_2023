@@ -261,7 +261,7 @@ export default function ModalPriceDetail({ callUuid, callCode, isOpen, userCre, 
             setFlowCode(localStorage.getItem("flow"));
             setContact(localStorage.getItem("contact"));
             setPriority(localStorage.getItem("priority"));
-            setContent(localStorage.getItem("content"));
+            //setContent(localStorage.getItem("content"));
         }
 
     }, []);

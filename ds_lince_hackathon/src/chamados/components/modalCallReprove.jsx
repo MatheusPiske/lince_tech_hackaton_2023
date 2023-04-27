@@ -183,23 +183,25 @@ export default function ModalCallReprove({ callUuid, callCode, isOpen, userCre, 
     }
 
     const handleCall = async (callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate, content, situation) => {
-        
-        const response = await callUseCases.postCreateCall(callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate, content, userCre, situation);
+        //console.log(content)
 
-        if (!response.status) {
-            return Swal.fire({
-                icon: "error",
-                confirmButtonText: "OK",
-                text: "Connection error",
-            });
-        } else {
+        const response = await callUseCases.postReproveCall(callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate, "", userCre, 4, content);
+
+        // if (!response.status) {
+        //     return Swal.fire({
+        //         icon: "error",
+        //         confirmButtonText: "OK",
+        //         text: "Connection error",
+        //     });
+        // } else {
             parentCallback(true);
             handleClose();
-            return Toast.fire({
-                icon: "success",
-                text: "Successfully registered",
-            });
-        }
+            //window.location.href = '/chamados';
+            // return Toast.fire({
+            //     icon: "success",
+            //     text: "Successfully registered",
+            // });
+        // }
     }
 
     useEffect(() => {
@@ -218,12 +220,12 @@ export default function ModalCallReprove({ callUuid, callCode, isOpen, userCre, 
             };
             getFlowCalls().then((response) => {
                 // setFlowCall(response.data.call)
-                setInformation(response.data.call.originProblemS)
-                setTitle(response.data.call.title);
-                setFlowCode(response.data.call.flow.uuid);
-                setContact(response.data.call.contact);
-                setPriority(response.data.call.priority);
-                setContent(response.data.call.richText);
+                //setInformation(response.data.call.originProblemS)
+                //setTitle(response.data.call.title);
+                //setFlowCode(response.data.call.flow.uuid);
+                //setContact(response.data.call.contact);
+                //setPriority(response.data.call.priority);
+                //setContent(response.data.call.richText);
             });
         }
 

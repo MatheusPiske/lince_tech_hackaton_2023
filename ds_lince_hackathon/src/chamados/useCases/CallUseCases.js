@@ -34,6 +34,11 @@ class CallUseCases {
         return response;
     }
 
+    async postReproveCall(callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate, contentCreate, user, situation, reasonReprove) {
+        const response = await callRepositories.postReproveCall(callUuid, flowCodeCreate, firstFieldCreate, priorityCreate, contactCreate, titleCreate, contentCreate, user, situation, reasonReprove);
+        return response;
+    }
+
 }
 
 export const callUseCases = new CallUseCases();
