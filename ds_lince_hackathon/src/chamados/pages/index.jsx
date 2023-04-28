@@ -164,14 +164,14 @@ const Chamados = () => {
                 <StyledTableCell align="right">Título</StyledTableCell>
                 <StyledTableCell align="right">Autor</StyledTableCell>
                 <StyledTableCell align="right">Prioridade</StyledTableCell>
-                <StyledTableCell align="right">Aprovador</StyledTableCell>
+                
                 <StyledTableCell align="right">Fluxo</StyledTableCell>
-                <StyledTableCell align="right">Último usuário</StyledTableCell>
+                
                 <StyledTableCell align="left">Data de criação</StyledTableCell>
                 <StyledTableCell align="right">Contato</StyledTableCell>
                 <StyledTableCell align="right">Origem</StyledTableCell>
-                <StyledTableCell align="center">Ação</StyledTableCell>
                 <StyledTableCell align="center">Situação</StyledTableCell>
+                <StyledTableCell align="center">Ação</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -183,19 +183,19 @@ const Chamados = () => {
                   <StyledTableCell align="right">{row.title}</StyledTableCell>
                   <StyledTableCell align="right">{row.author}</StyledTableCell>
                   <StyledTableCell align="right">{row.priority}</StyledTableCell>
-                  <StyledTableCell align="right">{ }</StyledTableCell>
+                  
                   <StyledTableCell align="right">{row.flow.number}</StyledTableCell>
-                  <StyledTableCell align="right">{ }</StyledTableCell>
+                  
                   <StyledTableCell align="left">{(row.createDate)}</StyledTableCell>
                   <StyledTableCell align="right">{row.contact}</StyledTableCell>
                   <StyledTableCell align="right">{row.originProblemS}</StyledTableCell>
+                  <StyledTableCell align="center"><Tooltip title={<span dangerouslySetInnerHTML={{__html: row.reason}}></span>}><div>{row.situation == 0 ? "Aprovado" : row.situation == 4 ? "Reprovado" : row.situation == 3 ? "Pendente de aprovação" : "Situação desconhecida"}</div></Tooltip></StyledTableCell>
                   <StyledTableCell align="center">
                   <IconButton id="situationButton" onClick={(evt) => handleClick(evt, row.uuid, row.numberCall, 0)}>{liberador === "normal" ? <EditIcon /> : <CheckCircleOutlineIcon/>}</IconButton>{liberador != "normal" ? <IconButton><CancelIcon onClick={(evt) => handleReprove(evt, row.uuid, row.numberCall)}/></IconButton> : ""}<IconButton  onClick={() => ( 
                   callUseCases.deleteFlowCall(row.numberCall, 1), 
                   window.location.href = '/chamados'
                   )}><DeleteIcon /></IconButton>
                   </StyledTableCell>
-                  <StyledTableCell align="center"><Tooltip title={<span dangerouslySetInnerHTML={{__html: row.reason}}></span>}><div>{row.situation == 0 ? "Aprovado" : row.situation == 4 ? "Reprovado" : row.situation == 3 ? "Pendente de aprovação" : "Situação desconhecida"}</div></Tooltip></StyledTableCell>
                 </StyledTableRow>
               ))}
             </TableBody>

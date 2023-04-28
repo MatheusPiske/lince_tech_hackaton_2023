@@ -42,9 +42,9 @@ function App() {
   <>
       <div className="sidebar close">
       <div className="logo-details">
-      <i className='bx bxl-c-plus-plus'></i>
-      {/* <img src="/images/lince_tech.jpeg" className='imagemSideBar'/> */}
-      <span className="logo_name">Lince Tech</span>
+      {/* <i className='bx bxl-c-plus-plus'></i> */}
+      <img src="/images/LT-removebg-preview.png" style={{width : "74px"}}/>
+      <span className="logo_name" style={{paddingLeft : "15px"}}>Lince Tech</span>
       </div>
       <ul className="nav-links">
       <li>

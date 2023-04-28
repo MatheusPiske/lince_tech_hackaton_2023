@@ -46,6 +46,7 @@ export default function ModalCallReprove({ callUuid, callCode, isOpen, userCre, 
     const [situation, setSituation] = useState(3);
 
     const config = {
+        language: "pt_br",
         height: "60vh",
         buttons: [
             'bold',

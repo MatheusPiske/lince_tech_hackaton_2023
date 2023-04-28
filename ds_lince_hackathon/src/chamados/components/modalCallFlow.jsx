@@ -48,6 +48,7 @@ export default function ModalPriceDetail({ callUuid, callCode, isOpen, userCre, 
     const [situation, setSituation] = useState(3);
 
     const config = {
+        language: "pt_br",
         height: "60vh",
         buttons: [
             'bold',
@@ -81,7 +82,6 @@ export default function ModalPriceDetail({ callUuid, callCode, isOpen, userCre, 
             'about',
             'color',
             'source',
-            'image',
         ],
         uploader: {
             //url: '/path/to/upload',
@@ -227,7 +227,7 @@ export default function ModalPriceDetail({ callUuid, callCode, isOpen, userCre, 
             handleClose();
             return Toast.fire({
                 icon: "success",
-                text: "Successfully registered",
+                text: "Registro criado!",
             });
         }
     }
