@@ -44,7 +44,7 @@ function App() {
       <div className="logo-details">
       {/* <i className='bx bxl-c-plus-plus'></i> */}
       <img src="/images/LT-removebg-preview.png" style={{width : "74px"}}/>
-      <span className="logo_name" style={{paddingLeft : "15px"}}>Lince Tech</span>
+      <span className="logo_name" style={{paddingLeft : "6px"}}>Contas Bancárias</span>
       </div>
       <ul className="nav-links">
       <li>

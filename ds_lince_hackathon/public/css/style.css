@@ -6,6 +6,9 @@
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
 }
+body {
+  background-color: #D3D3D3;
+}
 .imagemSideBar{
     font-size: 30px;
     color: #fff;
@@ -20,7 +23,7 @@
   left: 0;
   height: 100%;
   width: 260px;
-  background: #002754;
+  background: #2a462a;
   z-index: 100;
   transition: all 0.5s ease;
 }
@@ -47,9 +50,9 @@
   line-height: 80px;
 }
 .sidebar .logo-details .logo_name{
-  font-size: 22px;
+  font-size: 18px;
   color: #fff;
-  font-weight: 600;
+  font-weight: 500;
   transition: 0.3s ease;
   transition-delay: 0.1s;
   /* padding-top: 27px; */
@@ -181,7 +184,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #002754;
+  background: #2a462a;
   padding: 12px 0;
   transition: all 0.5s ease;
 }

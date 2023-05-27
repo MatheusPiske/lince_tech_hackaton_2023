@@ -11,7 +11,7 @@ const Home = () => {
                 <i className='bx bx-menu' ></i>
                 <Box sx={{ display: 'grid', height: '9vh' }}>
                     <Typography sx={{ display: 'flex', alignItems: 'center', fontSize: "22pt", fontWeight: "600", paddingTop : "15px" }}>Home</Typography>
-                    <Box sx={{ width: '2.5rem', height: '5px', marginTop: '-0.5rem', borderRadius: '5px', background: 'linear-gradient(90deg, #154360 0%, #1F618D 35%, #2980B9 100%)' }}></Box>
+                    <Box sx={{ width: '2.5rem', height: '5px', marginTop: '-0.5rem', borderRadius: '5px', background: 'linear-gradient(90deg, #2a462a 0%, #2a462a 35%, #32a532 100%)' }}></Box>
                 </Box>
             </div>
         </div>
